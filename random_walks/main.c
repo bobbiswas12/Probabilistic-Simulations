@@ -1,14 +1,14 @@
 #include <stdio.h>
-#include <math.h>
 #include <time.h>
 #include <stdlib.h>
 #include "raylib.h"
+#include <unistd.h>
 
 #define screen_width 1366
 #define screen_height 768
-#define fps 10
-#define grid_x 40
-#define grid_y 40
+#define fps 5
+#define grid_x 12
+#define grid_y 12
 #define points_y (float) screen_height / grid_y
 #define points_x (float) (screen_width - 120) / grid_x
 
@@ -53,8 +53,8 @@ void draw_graph(float screenw, float screenh) {
 }
 
 void transform_point(Vector2 *point, Vector2 origin) {
-  point->x += origin.x + point->x * points_x;
-  point->y += origin.y - point->y * points_y;
+  point->x = origin.x + point->x * points_x;
+  point->y = origin.y - point->y * points_y;
 }
 
 void draw_point(Vector2 position_point,Vector2 origin) {
@@ -67,13 +67,13 @@ void draw_point(Vector2 position_point,Vector2 origin) {
 
 void path_from_to(Vector2 initial_point, Vector2 final_point) {
 
-  DrawCircleV(final_point, 5, DARKBLUE);
+  /* DrawCircleV(final_point, 5, DARKBLUE); */
   DrawLineV(initial_point, final_point, GREEN);
 }
 
-void update(Vector2 *point, Vector2 origin, int dir) {
+void update(Vector2 *point, int dir) {
 
-  if (dir == 0) {
+  if (dir == 1) {
     point->x = point->x + points_x;
     point->y = point->y + points_y;
   } else {
@@ -81,11 +81,20 @@ void update(Vector2 *point, Vector2 origin, int dir) {
     point->y = point->y - points_y;
   }
 }
+
+void display_origin( Vector2 origin) {
   
+  Vector2 next = (Vector2) {-1,-1};
+  transform_point(&next, origin);
+  Vector2 mid = (Vector2) {(int) (next.x + origin.x)/2,(next.y + origin.y)/2};
+  DrawText(TextFormat("(%d,%d)", 0,0),mid.x,mid.y, 20, WHITE);
+}
+
 
 int main(){
 
 
+  srand(time(0));
   InitWindow(screen_width,screen_height,"Random Walk");
   SetTargetFPS(fps);
   Vector2 origin = (Vector2){100, (float)screen_height / 2};
@@ -97,27 +106,33 @@ int main(){
   printf("No. of Steps: ");
   scanf("%d",&steps);
 
+  transform_point(&point_start, origin);
   int step_counter = 0;
-  transform_point(&point_start,origin);
   
   while (!WindowShouldClose()){
 
     BeginDrawing();
     ClearBackground(BLACK);
+    DrawFPS(10, 10);
+    display_origin(origin);
 
     draw_graph(screen_width, screen_height);
     draw_point(point_start, origin);
 
-    if (step_counter <= steps) {
-      
-      int a = (int) random_value(2);
-      Vector2 prev_point = point_start;
-      update(&point_start, origin, a);
-      path_from_to(prev_point, point_start);
+    int a = (int) random_value(2);
+    Vector2 prev_point = point_start;
+    update(&point_start, a);
+    path_from_to(prev_point, point_start);
+    if (step_counter == steps) {
+      DrawCircleV(point_start,5,DARKBLUE);
     }
     step_counter++;
-    DrawFPS(10,10);
     EndDrawing();
+
+    if (step_counter > steps) {
+      sleep(2);
+      break;
+    }
   }
   CloseWindow();
   return 0;
