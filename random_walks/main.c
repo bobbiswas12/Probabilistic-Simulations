@@ -7,8 +7,8 @@
 #define screen_width 1366
 #define screen_height 768
 #define fps 5
-#define grid_x 12
-#define grid_y 12
+#define grid_x 30
+#define grid_y 30
 #define points_y (float) screen_height / grid_y
 #define points_x (float) (screen_width - 120) / grid_x
 
@@ -57,6 +57,11 @@ void transform_point(Vector2 *point, Vector2 origin) {
   point->y = origin.y - point->y * points_y;
 }
 
+void transform_point_back(Vector2 *point, Vector2 origin) {
+  point->x = (point->x - origin.x)/ points_x;
+  point->y = (origin.y - point->y)/ points_y;
+}
+
 void draw_point(Vector2 position_point,Vector2 origin) {
 
   /* Vector2 new_pos = (Vector2) {origin.x + points_x *
@@ -82,12 +87,17 @@ void update(Vector2 *point, int dir) {
   }
 }
 
-void display_origin( Vector2 origin) {
-  
-  Vector2 next = (Vector2) {-1,-1};
+void display_point(Vector2 point, Vector2 origin) {
+
+  transform_point_back(&point,origin);
+  Vector2 next = (Vector2){point.x - 1, point.y - 1};
+  transform_point(&point, origin);
   transform_point(&next, origin);
-  Vector2 mid = (Vector2) {(int) (next.x + origin.x)/2,(next.y + origin.y)/2};
-  DrawText(TextFormat("(%d,%d)", 0,0),mid.x,mid.y, 20, WHITE);
+  Vector2 mid =
+    (Vector2){(next.x + origin.x) / 2, (next.y + origin.y) / 2};
+  transform_point_back(&point,origin);
+  DrawText(TextFormat("(%d,%d)", (int) point.x, (int) point.y), mid.x, mid.y, 20, WHITE);
+  transform_point(&point,origin);
 }
 
 
@@ -114,7 +124,7 @@ int main(){
     BeginDrawing();
     ClearBackground(BLACK);
     DrawFPS(10, 10);
-    display_origin(origin);
+    display_point(origin,origin);
 
     draw_graph(screen_width, screen_height);
     draw_point(point_start, origin);
@@ -123,8 +133,10 @@ int main(){
     Vector2 prev_point = point_start;
     update(&point_start, a);
     path_from_to(prev_point, point_start);
+    display_point(point_start,origin);
     if (step_counter == steps) {
-      DrawCircleV(point_start,5,DARKBLUE);
+      DrawCircleV(point_start, 5, DARKBLUE);
+      display_point(point_start,origin);
     }
     step_counter++;
     EndDrawing();
