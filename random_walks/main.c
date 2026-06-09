@@ -6,9 +6,9 @@
 
 #define screen_width 1366
 #define screen_height 768
-#define fps 5
-#define grid_x 30
-#define grid_y 30
+#define fps 60
+#define grid_x 400
+#define grid_y 400
 #define points_y (float) screen_height / grid_y
 #define points_x (float) (screen_width - 120) / grid_x
 
@@ -139,9 +139,7 @@ int main(){
     DrawText(TextFormat("Steps = %d", step_counter), screen_width - 120, 10, 20, GREEN);
 
     draw_graph(screen_width, screen_height);
-    draw_point(point_start, origin);
 
-    Vector2 prev_point = point_start;
     int a = (int) random_value(2);
     update(&point_start, a);
     points[step_counter] = point_start;
