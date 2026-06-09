@@ -134,7 +134,9 @@ int main(){
     ClearBackground(BLACK);
     DrawFPS(10, 10);
     display_point(origin, origin);
-    display_point(points[0],origin);
+    
+    display_point(points[0], origin);
+    DrawText(TextFormat("Steps = %d", step_counter), screen_width - 120, 10, 20, GREEN);
 
     draw_graph(screen_width, screen_height);
     draw_point(point_start, origin);
