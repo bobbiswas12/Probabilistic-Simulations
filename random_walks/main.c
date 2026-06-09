@@ -100,6 +100,13 @@ void display_point(Vector2 point, Vector2 origin) {
   transform_point(&point,origin);
 }
 
+void draw_path(Vector2 *points, int step_counter) {
+
+  for (int i = 0; i < step_counter; i++) {
+    path_from_to(points[i], points[i + 1]);
+  }
+}
+    
 
 int main(){
 
@@ -117,26 +124,31 @@ int main(){
   scanf("%d",&steps);
 
   transform_point(&point_start, origin);
-  int step_counter = 0;
-  
+  Vector2 points[steps];
+  int step_counter = 1;
+  points[0] = point_start;
+
   while (!WindowShouldClose()){
 
     BeginDrawing();
     ClearBackground(BLACK);
     DrawFPS(10, 10);
-    display_point(origin,origin);
+    display_point(origin, origin);
+    display_point(points[0],origin);
 
     draw_graph(screen_width, screen_height);
     draw_point(point_start, origin);
 
-    int a = (int) random_value(2);
     Vector2 prev_point = point_start;
+    int a = (int) random_value(2);
     update(&point_start, a);
-    path_from_to(prev_point, point_start);
-    display_point(point_start,origin);
+    points[step_counter] = point_start;
+
+    draw_path(points,step_counter);
+    
     if (step_counter == steps) {
       DrawCircleV(point_start, 5, DARKBLUE);
-      display_point(point_start,origin);
+      display_point(points[steps-1],origin);
     }
     step_counter++;
     EndDrawing();
