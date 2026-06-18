@@ -1,19 +1,28 @@
 #include <stdio.h>
 #include "raylib.h"
 #include <math.h>
+#include <time.h>
+#include <stdlib.h>
 
 #define screen_height 768
 #define screen_width 1366
 #define origin (Vector2) {screen_width/2.0, screen_height/2.0}
 #define x_partitions 20
 #define y_partitions 20
-#define fps 15
+#define fps 30
 #define eps 1e-3
 #define learning_rate 1e-3
+#define data_size 100
+
+float random_value(float value){
+
+  return (((float) rand()/(float) RAND_MAX)*(float) value);
+}
+
 
 typedef struct {
 
-  Vector2 points[10];
+  Vector2 points[data_size];
 } data;
 
 typedef struct {
@@ -84,7 +93,7 @@ void draw_point(Vector2 point) { DrawCircleV(point, 2.5, BLUE); }
 
 void draw_data(data dat) {
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < data_size; i++) {
     
     Vector2 data_point = dat.points[i];
     transform_point(&data_point);
@@ -96,14 +105,14 @@ float cost_function(data dat,model parameters) {
 
   float cf = 0;
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < data_size; i++) {
     float y_real = dat.points[i].y;
     float y_predicted = (float) parameters.a * dat.points[i].x + parameters.b;
 
     cf += (y_real - y_predicted) * (y_real - y_predicted);
   }
 
-  return 0.5 * cf;
+  return 0.5 * cf / data_size;
 }
 
 void update_model(model *parameters, data dat) {
@@ -156,16 +165,25 @@ void draw_line(model parameters) {
 
 int main(){
 
+  srand(time(0));
   InitWindow(screen_width, screen_height, "SLR");
-  
   SetTargetFPS(fps);
 
   data dat = {0};
-  for (int i = 0; i < 10; i++) {
-    dat.points[i] = (Vector2){i - 3, i + 3};
+
+  for (int i = 0; i < data_size; i++) {
+    
+    float x, y;
+    
+    /* printf("Enter Point %d: ", i); */
+    /* scanf("%f %f",&x,&y); */
+
+    x = random_value(40) - 20;
+    y = x * pow(-1,(int) random_value(10));
+    dat.points[i] = (Vector2){x, y};
   }
   model parameters;
-  parameters.a = 1;
+  parameters.a = -1;
   parameters.b = 0;
   
   
@@ -173,14 +191,16 @@ int main(){
 
     BeginDrawing();
     
-    ClearBackground(GetColor(0x181818AA));
+    ClearBackground(BLACK);
 
     draw_graph(screen_height, screen_width);
     draw_data(dat);
-    draw_line(parameters);
     update_model(&parameters, dat);
     draw_line(parameters);
-    DrawText(TextFormat("Cost Function: %f",cost_function(dat,parameters)),10,30,20,YELLOW);
+    DrawText(TextFormat("Cost Function: %f", cost_function(dat, parameters)),
+             10, 30, 20, YELLOW);
+    DrawText(TextFormat("Alpha: %f", parameters.a), 10, 50, 20, YELLOW);
+    DrawText(TextFormat("Beta: %f", parameters.b), 10, 70, 20, YELLOW);
     EndDrawing();
   }
   CloseWindow();
