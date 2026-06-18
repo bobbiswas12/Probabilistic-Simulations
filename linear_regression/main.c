@@ -10,8 +10,8 @@
 #define x_partitions 20
 #define y_partitions 20
 #define fps 30
-#define eps 1e-3
-#define learning_rate 1e-3
+#define eps 1e-5
+#define learning_rate 1e-2
 #define data_size 100
 
 float random_value(float value){
@@ -89,7 +89,7 @@ void transform_point(Vector2 *point) {
   point->y = origin.y - (y_int_part + y_frac_part) * y_partition_size;
 }
 
-void draw_point(Vector2 point) { DrawCircleV(point, 2.5, BLUE); }
+void draw_point(Vector2 point) { DrawCircleV(point, 3.5, BLUE); }
 
 void draw_data(data dat) {
 
@@ -159,9 +159,24 @@ void draw_line(model parameters) {
     transform_point(&lower_extreme_point);
   }
   DrawLineV(above_extreme_point,lower_extreme_point,RED);
-  
-  
 }
+
+void highlight_points(data dat, model parameters) {
+
+  for (int i = 0; i < data_size; i++) {
+
+    float distance =
+        fabsf(parameters.a * dat.points[i].x - dat.points[i].y + parameters.b) /
+        sqrt(parameters.a * parameters.a + 1);
+
+    if (distance < 0.5) {
+      Vector2 data_point = dat.points[i];
+      transform_point(&data_point);
+      DrawCircleV(data_point,5,GREEN);
+    }
+  }
+}
+      
 
 int main(){
 
@@ -179,12 +194,12 @@ int main(){
     /* scanf("%f %f",&x,&y); */
 
     x = random_value(40) - 20;
-    y = x * pow(-1,(int) random_value(10));
+    y = y - random_value(10) + 5;
     dat.points[i] = (Vector2){x, y};
   }
   model parameters;
   parameters.a = -1;
-  parameters.b = 0;
+  parameters.b = -6;
   
   
   while (!WindowShouldClose()) {
@@ -197,6 +212,7 @@ int main(){
     draw_data(dat);
     update_model(&parameters, dat);
     draw_line(parameters);
+    highlight_points(dat,parameters);
     DrawText(TextFormat("Cost Function: %f", cost_function(dat, parameters)),
              10, 30, 20, YELLOW);
     DrawText(TextFormat("Alpha: %f", parameters.a), 10, 50, 20, YELLOW);
