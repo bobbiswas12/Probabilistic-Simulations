@@ -1,3 +1,20 @@
+
+/* Using Gradient Descent to Visualise Linear Regression Dynamically */
+/* Copyright (C) 2026  Tanmay Rai */
+
+/* This program is free software: you can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation, either version 3 of the License, or */
+/*    (at your option) any later version. */
+
+/*    This program is distributed in the hope that it will be useful, */
+/*    but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/*    GNU General Public License for more details. */
+
+/*    You should have received a copy of the GNU General Public License */
+/*    along with this program.  If not, see <https://www.gnu.org/licenses/>. */
+
 #include <stdio.h>
 #include "raylib.h"
 #include <math.h>
@@ -7,12 +24,12 @@
 #define screen_height 768
 #define screen_width 1366
 #define origin (Vector2) {screen_width/2.0, screen_height/2.0}
-#define x_partitions 20
-#define y_partitions 20
+#define x_partitions 40
+#define y_partitions 40
 #define fps 30
 #define eps 1e-5
 #define learning_rate 1e-2
-#define data_size 100
+#define data_size 49
 
 float random_value(float value){
 
@@ -42,35 +59,35 @@ void draw_graph(float screen_h, float screen_w){
   DrawLineV(y_pos, y_neg, WHITE);
   DrawLineV(x_pos, x_neg, WHITE);
 
-  float x_partition_size = (float)(screen_width - origin.x) / x_partitions;
+  /* float x_partition_size = (float)(screen_width - origin.x) / x_partitions; */
   
-  for (int i = 1; i <= x_partitions; i++) {
+  /* for (int i = 1; i <= x_partitions; i++) { */
 
-    Vector2 x_pos = (Vector2){origin.x + i * x_partition_size, 0};
-    Vector2 x_neg = (Vector2){origin.x + i * x_partition_size, screen_height};
+  /*   Vector2 x_pos = (Vector2){origin.x + i * x_partition_size, 0}; */
+  /*   Vector2 x_neg = (Vector2){origin.x + i * x_partition_size, screen_height}; */
 
-    Vector2 _x_pos = (Vector2){origin.x - i * x_partition_size, 0};
-    Vector2 _x_neg = (Vector2){origin.x - i * x_partition_size, screen_height};
+  /*   Vector2 _x_pos = (Vector2){origin.x - i * x_partition_size, 0}; */
+  /*   Vector2 _x_neg = (Vector2){origin.x - i * x_partition_size, screen_height}; */
 
 
-    DrawLineV(x_pos, x_neg, DARKGRAY);
-    DrawLineV(_x_pos, _x_neg, DARKGRAY);
-  }
+  /*   DrawLineV(x_pos, x_neg, DARKGRAY); */
+  /*   DrawLineV(_x_pos, _x_neg, DARKGRAY); */
+  /* } */
 
-  float y_partition_size = (float)(screen_height - origin.y) / y_partitions;
+  /* float y_partition_size = (float)(screen_height - origin.y) / y_partitions; */
   
-  for (int i = 1; i <= y_partitions; i++) {
+  /* for (int i = 1; i <= y_partitions; i++) { */
 
-    Vector2 y_pos = (Vector2){0,origin.y + i * y_partition_size};
-    Vector2 y_neg = (Vector2){screen_width,origin.y + i * y_partition_size};
+  /*   Vector2 y_pos = (Vector2){0,origin.y + i * y_partition_size}; */
+  /*   Vector2 y_neg = (Vector2){screen_width,origin.y + i * y_partition_size}; */
 
-    Vector2 _y_pos = (Vector2){0,origin.y - i * y_partition_size};
-    Vector2 _y_neg = (Vector2){screen_width,origin.y - i * y_partition_size};
+  /*   Vector2 _y_pos = (Vector2){0,origin.y - i * y_partition_size}; */
+  /*   Vector2 _y_neg = (Vector2){screen_width,origin.y - i * y_partition_size}; */
 
 
-    DrawLineV(y_pos, y_neg, DARKGRAY);
-    DrawLineV(_y_pos, _y_neg, DARKGRAY);
-  }
+  /*   DrawLineV(y_pos, y_neg, DARKGRAY); */
+  /*   DrawLineV(_y_pos, _y_neg, DARKGRAY); */
+  /* } */
 }
 
 void transform_point(Vector2 *point) {
@@ -167,7 +184,7 @@ void highlight_points(data dat, model parameters) {
 
     float distance =
         fabsf(parameters.a * dat.points[i].x - dat.points[i].y + parameters.b) /
-        sqrt(parameters.a * parameters.a + 1);
+        sqrtf(parameters.a * parameters.a + 1);
 
     if (distance < 0.5) {
       Vector2 data_point = dat.points[i];
@@ -177,7 +194,6 @@ void highlight_points(data dat, model parameters) {
   }
 }
       
-
 int main(){
 
   srand(time(0));
@@ -190,16 +206,17 @@ int main(){
     
     float x, y;
     
-    /* printf("Enter Point %d: ", i); */
-    /* scanf("%f %f",&x,&y); */
+    printf("Enter Point %d: ", i);
+    scanf("%f %f",&x,&y);
 
     x = random_value(40) - 20;
-    y = y - random_value(10) + 5;
+    y = x - random_value(10) + 5;
+    
     dat.points[i] = (Vector2){x, y};
   }
   model parameters;
-  parameters.a = -1;
-  parameters.b = -6;
+  parameters.a = -1.1;
+  parameters.b = -80;
   
   
   while (!WindowShouldClose()) {
