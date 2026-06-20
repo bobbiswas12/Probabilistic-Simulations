@@ -1,3 +1,21 @@
+
+/* Visualising Random Walks */
+/* Copyright (C) 2026  Tanmay Rai */
+
+/* This program is free software: you can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation, either version 3 of the License, or */
+/*    (at your option) any later version. */
+
+/*    This program is distributed in the hope that it will be useful, */
+/*    but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/*    GNU General Public License for more details. */
+
+/*    You should have received a copy of the GNU General Public License */
+/*    along with this program.  If not, see <https://www.gnu.org/licenses/>. */
+
+
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -6,9 +24,9 @@
 
 #define screen_width 1366
 #define screen_height 768
-#define fps 60
-#define grid_x 400
-#define grid_y 400
+#define fps 120
+#define grid_x 1200
+#define grid_y 1200
 #define points_y (float) screen_height / grid_y
 #define points_x (float) (screen_width - 120) / grid_x
 
@@ -27,29 +45,29 @@ void draw_graph(float screenw, float screenh) {
   DrawLineV(y_pos, y_neg, WHITE);
   DrawLineV(x_pos, x_neg, WHITE);
 
-  for (int i = -200; i <= grid_x; i++) {
+  /* for (int i = -200; i <= grid_x; i++) { */
 
-    if (i!=0){
+  /*   if (i!=0){ */
 
-      Vector2 y_pos = (Vector2){100 + points_x * i, 0};
-      Vector2 y_neg = (Vector2){100 + points_x * i, screenh};
-      DrawLineV(y_pos, y_neg, DARKGRAY);
-    }
-  }
+  /*     Vector2 y_pos = (Vector2){100 + points_x * i, 0}; */
+  /*     Vector2 y_neg = (Vector2){100 + points_x * i, screenh}; */
+  /*     DrawLineV(y_pos, y_neg, DARKGRAY); */
+  /*   } */
+  /* } */
 
-  for (int i = 1; i <= grid_y/2; i++) {
+  /* for (int i = 1; i <= grid_y/2; i++) { */
 
-    if (i != 0) {
+  /*   if (i != 0) { */
       
-      Vector2 x_pos = (Vector2){0,screenh/2 - points_y * i };
-      Vector2 x_neg = (Vector2){screenw, screenh/2 - points_y * i};
-      DrawLineV(x_pos, x_neg, DARKGRAY);
+  /*     Vector2 x_pos = (Vector2){0,screenh/2 - points_y * i }; */
+  /*     Vector2 x_neg = (Vector2){screenw, screenh/2 - points_y * i}; */
+  /*     DrawLineV(x_pos, x_neg, DARKGRAY); */
 
-      Vector2 x_pos_1 = (Vector2){0,screenh/2 + points_y * i };
-      Vector2 x_neg_1 = (Vector2){screenw, screenh / 2 + points_y * i};
-      DrawLineV(x_pos_1,x_neg_1,DARKGRAY);
-    }
-  }
+  /*     Vector2 x_pos_1 = (Vector2){0,screenh/2 + points_y * i }; */
+  /*     Vector2 x_neg_1 = (Vector2){screenw, screenh / 2 + points_y * i}; */
+  /*     DrawLineV(x_pos_1,x_neg_1,DARKGRAY); */
+  /*   } */
+
 }
 
 void transform_point(Vector2 *point, Vector2 origin) {
@@ -135,7 +153,6 @@ int main(){
     DrawFPS(10, 10);
     display_point(origin, origin);
     
-    display_point(points[0], origin);
     DrawText(TextFormat("Steps = %d", step_counter), screen_width - 120, 10, 20, GREEN);
 
     draw_graph(screen_width, screen_height);
@@ -144,7 +161,7 @@ int main(){
     update(&point_start, a);
     points[step_counter] = point_start;
 
-    draw_path(points,step_counter);
+    draw_path(points, step_counter);
     
     if (step_counter == steps) {
       DrawCircleV(point_start, 5, DARKBLUE);
