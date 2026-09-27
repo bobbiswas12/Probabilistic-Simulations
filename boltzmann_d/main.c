@@ -1,7 +1,18 @@
-/* Boltzmann Distribution Visualized using the example of a lattice containing 400 quanta. */
-/* Copyright (C) 2026  Tanmay Rai */
+/* Boltzmann Distribution Visualized using the example of a quantum lattice
+ * containing some X quanta. */
 
-/* Boltzmann Distribution Visualized using the example of a lattice containing 400 quanta. */
+/* The procedure is simple: At each frame (or at each updation of the lattice), we
+randomly choose a site (a cell basically) and remove 1 quanta (basically energy
+(since energy is quantized thanks to quantum mechanics) if possible) from that
+site and randomly allocate that quanta to another site. We observe the count of
+quanta in the lattice using a histogram and we see that it converges to the
+Boltzmann distribution. Interestingly, for some values of initial quantum
+distribution i.e. the lattice being initialised to some particular value of
+quanta in each cell, the histogram just converges to a single frequency bar of
+0! i.e. the average energy of the lattice converges to 0. I have observed that
+this only happens for very small values (< 8 quanta in each cell). */
+
+
 /* Copyright (C) 2026  Tanmay Rai */
 
 /* This program is free software: you can redistribute it and/or modify */
